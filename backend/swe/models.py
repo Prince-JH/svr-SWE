@@ -1,10 +1,11 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
 class LifeCycleModel(models.Model):
     status = models.CharField(max_length=20, default='')
     creation_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True)
     last_update_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.CharField(max_length=50, default='')
 
@@ -54,25 +55,27 @@ class MovieMeta(LifeCycleModel):
         yield 'movie_meta_id', self.pk
 
 
-class User(LifeCycleModel):
+class Member(LifeCycleModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.CharField(db_index=True, max_length=200, default='')
     name = models.CharField(max_length=50, default='')
     age = models.IntegerField(db_index=True, default=0)
+    access_token = models.TextField(default='')
     password = models.TextField(default='')
     phone_no = models.CharField(max_length=50, default='')
 
     class Meta:
-        db_table = 'user'
+        db_table = 'member'
         app_label = 'swe'
 
     def __iter__(self):
-        yield 'user_id', self.pk
+        yield 'member_id', self.pk
 
 
 class Request(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='request')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id',
+    user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
                              related_name='request')
 
     class Meta:
@@ -88,7 +91,7 @@ class Comment(LifeCycleModel):
                                 related_name='comment')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='comment')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id',
+    user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
                              related_name='comment')
 
     class Meta:
