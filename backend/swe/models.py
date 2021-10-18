@@ -31,6 +31,8 @@ class Movie(LifeCycleModel):
     title = models.CharField(db_index=True, max_length=200, default='')
     director = models.CharField(db_index=True, max_length=200, default='')
     release_date = models.DateTimeField()
+    total_view = models.IntegerField(default=0)
+    daily_view = models.IntegerField(default=0)
     poster_path = models.TextField(default='')
 
     class Meta:
