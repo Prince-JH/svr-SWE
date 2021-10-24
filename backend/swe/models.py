@@ -46,8 +46,7 @@ class Movie(LifeCycleModel):
 class MovieMeta(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='movie_meta')
-    type_code = models.ForeignKey(Code, on_delete=models.CASCADE, db_column='type_code_id',
-                                  related_name='movie_meta')
+    type_code = models.CharField(db_index=True, max_length=50, default='')
 
     class Meta:
         db_table = 'movie_meta'
