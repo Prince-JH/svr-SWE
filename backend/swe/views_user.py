@@ -116,12 +116,10 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         manual_parameters=[email],
         responses={
             200: openapi.Schema(
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'is_exist': openapi.Schema(type=openapi.TYPE_BOOLEAN),
-                    }))})
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'is_exist': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                })})
     def read(self, request):
         try:
             email = request.GET.get('email')

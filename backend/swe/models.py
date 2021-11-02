@@ -17,7 +17,7 @@ class Code(LifeCycleModel):
     code = models.CharField(db_index=True, max_length=100, default='')
     name = models.CharField(db_index=True, max_length=200, default='')
     description = models.TextField(null=True)
-    parent_code = models.CharField(max_length=100, default='')
+    parent_code = models.CharField(max_length=100, null=True)
 
     class Meta:
         db_table = 'code'
@@ -61,6 +61,7 @@ class Member(LifeCycleModel):
     email = models.CharField(db_index=True, max_length=200, default='')
     name = models.CharField(max_length=50, default='')
     age = models.IntegerField(db_index=True, default=0)
+    sex = models.CharField(max_length=10, default='')
     access_token = models.TextField(default='')
     password = models.TextField(default='')
     phone_no = models.CharField(max_length=50, default='')

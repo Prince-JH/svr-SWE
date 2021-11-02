@@ -6,6 +6,10 @@ def convert_category_to_code(category):
     return Code.objects.get(name=category).code
 
 
+def convert_codes_to_name_list(codes):
+    return Code.objects.filter(code__in=codes).values_list('name', flat=True)
+
+
 def create_member(data):
     user = SerializerMember(data=data)
     user.is_valid(raise_exception=True)
