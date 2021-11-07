@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 from django.views import View
 from drf_yasg import openapi
@@ -16,12 +17,168 @@ from rest_framework.response import Response
 
 from config.settings.dev import POSTER_ROOT
 from swe.func import create_member, create_movie, create_movie_meta, convert_category_to_code, \
-    convert_codes_to_name_list
+    convert_codes_to_name_list, get_user
 from swe.globals import *
-from swe.models import Member, Movie, Code, MovieMeta
+from swe.models import Member, Movie, Code, MovieMeta, Request, Comment
 
 
 class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
+    """
+    영화
+    """
+    access_token = openapi.Parameter(
+        'access-token',  # 쿼리 이름
+        openapi.IN_HEADER,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='ACCESS_TOKEN',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
+    keyword_type = openapi.Parameter(
+        'keyword_type',  # 쿼리 이름
+        openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='keyword_type',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
+    keyword = openapi.Parameter(
+        'keyword',  # 쿼리 이름
+        openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='keyword',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
+
+    @swagger_auto_schema(
+        operation_description="영화 등록",
+        operation_id='save movie',
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'title': openapi.Schema(type=openapi.TYPE_STRING),
+                'director': openapi.Schema(type=openapi.TYPE_STRING),
+                'release_date': openapi.Schema(type=openapi.TYPE_STRING),
+                'poster_path': openapi.Schema(type=openapi.TYPE_STRING),
+                'category_list': openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                items=openapi.Items(
+                                                    type=openapi.TYPE_STRING))
+            }))
+    def create(self, request):
+        try:
+            with transaction.atomic():
+                data = request.data
+                category_list = data['category_list']
+                data['poster_path'] = data['poster_path']
+                data['release_date'] = datetime.strptime(data['release_date'], "%Y-%m-%d")
+                data['movie'] = create_movie(data).pk
+                data['creation_date'] = timezone.now()
+                data['last_update_date'] = timezone.now()
+
+                for category in category_list:
+                    category_data = copy.copy(data)
+                    category_data['type_code'] = convert_category_to_code(category)
+                    create_movie_meta(category_data)
+
+            return Response(status=status.HTTP_201_CREATED)
+
+        except:
+            traceback.print_exc()
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_description="영화 조회수 증가",
+        operation_id='increase movie view'
+    )
+    def update(self, request, movie_id):
+        try:
+            movie = Movie.objects.filter(id=movie_id)
+            movie.update(
+                last_update_date=timezone.now(),
+                total_view=movie[0].total_view + 1,
+                daily_view=movie[0].daily_view + 1,
+            )
+
+            return Response(status=status.HTTP_200_OK)
+
+        except:
+            traceback.print_exc()
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_description="영화 조회",
+        operation_id='check existence',
+        manual_parameters=[access_token],
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'movies': openapi.Schema(type=openapi.TYPE_ARRAY,
+                                             items=openapi.Items(
+                                                 openapi.TYPE_OBJECT,
+                                                 properties={
+                                                     'title': openapi.Schema(type=openapi.TYPE_STRING),
+                                                     'director': openapi.Schema(type=openapi.TYPE_STRING),
+                                                     'release_date': openapi.Schema(type=openapi.TYPE_STRING),
+                                                     'poster_path': openapi.Schema(type=openapi.TYPE_STRING),
+                                                     'category_list': openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                                                     items=openapi.Items(
+                                                                                         type=openapi.TYPE_STRING)),
+                                                     'comments': openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                                                items=openapi.Items(
+                                                                                    type=openapi.TYPE_OBJECT,
+                                                                                    properties={
+                                                                                        'is_mine': openapi.Schema(
+                                                                                            type=openapi.TYPE_BOOLEAN),
+                                                                                        'user_name': openapi.Schema(
+                                                                                            type=openapi.TYPE_STRING),
+                                                                                        'content': openapi.Schema(
+                                                                                            type=openapi.TYPE_STRING),
+                                                                                        'creation_date': openapi.Schema(
+                                                                                            type=openapi.TYPE_STRING),
+                                                                                    })),
+                                                     'request_count': openapi.Schema(type=openapi.TYPE_INTEGER),
+                                                     'is_request': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                                                 }
+                                             )),
+                })})
+    def read(self, request, movie_id):
+        try:
+            user = get_user(request=request)
+            result = dict()
+            movie = Movie.objects.get(id=movie_id)
+            result['title'] = movie.title
+            result['director'] = movie.director
+            result['release_date'] = movie.release_date
+            result['poster_path'] = POSTER_ROOT + movie.poster_path
+            result['category_list'] = convert_codes_to_name_list(
+                MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
+            result['comments'] = list()
+            comments_append = result['comments'].append
+            comments = Comment.objects.select_related('user').filter(movie=movie, status=STATUS_ACTIVE)
+            for comment in comments:
+                comment_data = dict()
+                comment_data['comment_id'] = comment.id
+                comment_data['user_name'] = comment.user.name
+                comment_data['content'] = comment.content
+                comment_data['creation_date'] = comment.creation_date
+                comment_data['is_mine'] = True if comment.user == user else False
+                comments_append(comment_data)
+            # result['comments'] = Comment.objects.filter(movie=movie, status=STATUS_ACTIVE).annotate(
+            #     user_name=F('user__name'), is_mine=F('True')).values('id', 'user_name', 'content', 'creation_date', 'is_mine')
+            result['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
+            result['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
+                                                                  user=user).count() > 0 else False
+
+            return Response(data=result, status=status.HTTP_200_OK)
+
+        except:
+            traceback.print_exc()
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     """
     영화
     """
@@ -62,93 +219,16 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     )
 
     @swagger_auto_schema(
-        operation_description="영화 등록",
-        operation_id='save movie',
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'title': openapi.Schema(type=openapi.TYPE_STRING),
-                'director': openapi.Schema(type=openapi.TYPE_STRING),
-                'release_date': openapi.Schema(type=openapi.TYPE_STRING),
-                'poster_path': openapi.Schema(type=openapi.TYPE_STRING),
-                'category_list': openapi.Schema(type=openapi.TYPE_ARRAY,
-                                                items=openapi.Items(
-                                                    type=openapi.TYPE_STRING))
-            }))
-    def create(self, request):
-        try:
-            with transaction.atomic():
-                data = request.data
-                category_list = data['category_list']
-                data['poster_path'] = POSTER_ROOT + data['poster_path']
-                data['release_date'] = datetime.strptime(data['release_date'], "%Y-%m-%d")
-                data['movie'] = create_movie(data).pk
-                data['creation_date'] = timezone.now()
-                data['last_update_date'] = timezone.now()
-
-
-                for category in category_list:
-                    category_data = copy.copy(data)
-                    category_data['type_code'] = convert_category_to_code(category)
-                    create_movie_meta(category_data)
-
-            return Response(status=status.HTTP_201_CREATED)
-
-        except:
-            traceback.print_exc()
-
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @swagger_auto_schema(
-        operation_description="영화 수정",
-        operation_id='sign in, sign out',
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'type': openapi.Schema(type=openapi.TYPE_STRING),
-                'email': openapi.Schema(type=openapi.TYPE_STRING),
-                'password': openapi.Schema(type=openapi.TYPE_STRING)
-            }),
-        responses={
-            200: openapi.Schema(
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Items(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'token': openapi.Schema(type=openapi.TYPE_STRING),
-                    }))}
-    )
-    def update(self, request):
-        try:
-            data = request.data
-            user = User.objects.get(username=data['email'])
-            member = Member.objects.filter(email=data['email'], status=STATUS_ACTIVE)
-            if check_password((data['password']), user.password):
-                result = dict()
-                token = Token.objects.get_or_create(user=user)[0].key
-                result['token'] = token
-                member.update(
-                    access_token=token,
-                    last_update_date=timezone.now()
-                )
-            else:
-                return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
-
-            return Response(data=result, status=status.HTTP_200_OK)
-
-        except:
-            traceback.print_exc()
-
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @swagger_auto_schema(
-        operation_description="영화 조회",
+        operation_description="영화 리스트 조회",
         operation_id='check existence',
-        manual_parameters=[keyword_type, page_size, page_count],
+        manual_parameters=[keyword_type, keyword, page_size, page_count],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
+                    'total': openapi.Schema(type=openapi.TYPE_INTEGER),
+                    'page_count': openapi.Schema(type=openapi.TYPE_INTEGER),
+                    'page_size': openapi.Schema(type=openapi.TYPE_INTEGER),
                     'movies': openapi.Schema(type=openapi.TYPE_ARRAY,
                                              items=openapi.Items(
                                                  openapi.TYPE_OBJECT,
@@ -165,6 +245,9 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                 })})
     def read(self, request):
         try:
+
+            print("movie list")
+
             result = dict()
 
             page_size = request.query_params.get("page_size", 10)
@@ -181,8 +264,16 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                 page_obj = paginator.get_page(page_count)
                 page_movies = page_obj.object_list
 
+                result['total'] = paginator.count
+                result['page_count'] = int(page_count)
+                result['page_size'] = int(page_size)
+                no = int(page_size) * (int(page_count) - 1) + 1
+
                 for movie in page_movies:
                     movie_data = dict()
+                    movie_data['no'] = no
+                    movie_data['movie_id'] = movie.id
+                    no += 1
                     movie_data['title'] = movie.title
                     movie_data['director'] = movie.director
                     movie_data['release_date'] = movie.release_date

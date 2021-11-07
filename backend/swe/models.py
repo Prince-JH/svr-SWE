@@ -90,11 +90,13 @@ class Request(LifeCycleModel):
 
 class Comment(LifeCycleModel):
     request = models.ForeignKey(Request, on_delete=models.CASCADE, db_column='request_id',
-                                related_name='comment')
+                                related_name='comment', null=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='comment')
     user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
                              related_name='comment')
+    content = models.TextField(default='')
+
 
     class Meta:
         db_table = 'comment'

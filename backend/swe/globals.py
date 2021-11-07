@@ -1,6 +1,9 @@
 STATUS_ACTIVE = 'Active'
 STATUS_INACTIVE = 'Inactive'
 
+UPDATE_TYPE_UPDATE = 'Update'
+UPDATE_TYPE_DELETE = 'Delete'
+
 CATEGORY_ACTION = 'Action'
 CATEGORY_ROMANCE = 'Romance'
 CATEGORY_DRAMA = 'Drama'
