@@ -36,13 +36,16 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="회원 가입",
-        operation_id='sign up',
+        operation_id='회원 가입',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 'email': openapi.Schema(type=openapi.TYPE_STRING),
                 'name': openapi.Schema(type=openapi.TYPE_STRING),
                 'age': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'profession': openapi.Schema(type=openapi.TYPE_STRING),
+                'address': openapi.Schema(type=openapi.TYPE_STRING, example="서울시 강남구 삼성동"),
+                'sex': openapi.Schema(type=openapi.TYPE_STRING, description="M: 남자, W: 여자"),
                 'password': openapi.Schema(type=openapi.TYPE_STRING),
                 'password_confirm': openapi.Schema(type=openapi.TYPE_STRING)
             }))
@@ -70,7 +73,7 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="로그인, 로그아웃",
-        operation_id='sign in, sign out',
+        operation_id='로그인, 로그아웃',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -112,7 +115,7 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="이메일 중복 조회",
-        operation_id='check existence',
+        operation_id='이메일 중복 조회',
         manual_parameters=[email],
         responses={
             200: openapi.Schema(

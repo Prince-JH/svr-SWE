@@ -43,7 +43,7 @@ class ViewComment(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="댓글 등록",
-        operation_id='save comments',
+        operation_id='댓글 등록',
         manual_parameters=[access_token],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -72,7 +72,7 @@ class ViewComment(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="댓글 수정 및 삭제",
-        operation_id='save comments',
+        operation_id='댓글 수정 및 삭제',
         manual_parameters=[access_token, update_type],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,

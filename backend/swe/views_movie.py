@@ -49,8 +49,8 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     )
 
     @swagger_auto_schema(
-        operation_description="영화 등록",
-        operation_id='save movie',
+        operation_description="영화 등록(DB)",
+        operation_id='영화 등록(DB)',
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -87,7 +87,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="영화 조회수 증가",
-        operation_id='increase movie view'
+        operation_id='영화 조회수 증가'
     )
     def update(self, request, movie_id):
         try:
@@ -107,7 +107,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="영화 조회",
-        operation_id='check existence',
+        operation_id='영화 조회',
         manual_parameters=[access_token],
         responses={
             200: openapi.Schema(
@@ -220,7 +220,7 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
     @swagger_auto_schema(
         operation_description="영화 리스트 조회",
-        operation_id='check existence',
+        operation_id='영화 리스트 조회',
         manual_parameters=[keyword_type, keyword, page_size, page_count],
         responses={
             200: openapi.Schema(

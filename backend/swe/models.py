@@ -59,7 +59,9 @@ class MovieMeta(LifeCycleModel):
 class Member(LifeCycleModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.CharField(db_index=True, max_length=200, default='')
+    profession = models.CharField(max_length=50, default='')
     name = models.CharField(max_length=50, default='')
+    address = models.TextField(default='')
     age = models.IntegerField(db_index=True, default=0)
     sex = models.CharField(max_length=10, default='')
     access_token = models.TextField(default='')
