@@ -11,6 +11,8 @@ urlpatterns = [
     path('swe/v1/movie-list', ViewMovieList.as_view({"get": "read"}), name='movie-list'),
 
     path('swe/v1/comments', ViewComment.as_view({"post": "create"}), name='comments'),
-    path('swe/v1/comments/<comment_id>', ViewComment.as_view({"put": "update"}), name='comments')
+    path('swe/v1/comments/<comment_id>', ViewComment.as_view({"put": "update"}), name='comments'),
+
+    path('swe/v1/request', ViewComment.as_view({"put": "update"}), name='comments')
 
 ]

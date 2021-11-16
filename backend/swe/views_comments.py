@@ -24,7 +24,7 @@ from swe.models import Member, Movie, Code, MovieMeta, Request, Comment
 
 class ViewComment(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     """
-    영화
+    댓글
     """
     access_token = openapi.Parameter(
         'access-token',  # 쿼리 이름
