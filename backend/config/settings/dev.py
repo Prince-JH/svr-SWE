@@ -24,6 +24,9 @@ secret_file = os.path.join(BASE_DIR, 'secret.json')
 
 POSTER_ROOT = os.path.join(BASE_DIR, '../poster/')
 
+CRONJOB_ROOT = os.path.join(BASE_DIR, '../swe/cronjobs')
+LOG_ROOT = os.path.join(BASE_DIR, '../log/')
+
 with open(secret_file, 'r') as f:
     secrets = json.loads(f.read())
 
@@ -34,6 +37,7 @@ def get_secret(setting, secrets=secrets):
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
+
 
 SECRET_KEY = get_secret("SECRET_KEY")
 # Application definition
@@ -56,6 +60,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  ### This enables the HTTP token authentication.
 
+    'django_crontab',
+
     'drf_yasg',
 
 ]
@@ -69,6 +75,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CRONJOBS = [
+    ('* 0 * * *', 'swe.cronjobs.reset_daily_view', ">> " + LOG_ROOT + "reset_daily_view_cronjob.log"),
+]
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+
+def temp():
+    print("########")
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -93,16 +109,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'abcd1234',
+#         'HOST': 'swe-db.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'abcd1234',
-        'HOST': 'database-1.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'swe',
+        'USER': 'prince',
+        'PASSWORD': '0000',
+        'HOST': 'localhost',
+        'PORT': '5433',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

@@ -1,0 +1,229 @@
+Fatal Python error: init_import_size: Failed to import the site module
+Python runtime state: initialized
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 580, in <module>
+    main()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 563, in main
+    known_paths = venv(known_paths)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 481, in venv
+    with open(virtual_conf, encoding='utf-8') as f:
+PermissionError: [Errno 1] Operation not permitted: '/Users/jihoon/Downloads/SWE/main-svr/backend/myvenv/pyvenv.cfg'
+Fatal Python error: init_import_size: Failed to import the site module
+Python runtime state: initialized
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 580, in <module>
+    main()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 563, in main
+    known_paths = venv(known_paths)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site.py", line 481, in venv
+    with open(virtual_conf, encoding='utf-8') as f:
+PermissionError: [Errno 1] Operation not permitted: '/Users/jihoon/Downloads/SWE/main-svr/backend/myvenv/pyvenv.cfg'
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+/Library/Frameworks/Python.framework/Versions/3.8/bin/python3: can't open file '/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py': [Errno 1] Operation not permitted
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+########
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+Traceback (most recent call last):
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 22, in <module>
+    main()
+  File "/Users/jihoon/Downloads/SWE/main-svr/backend/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 401, in execute_from_command_line
+    utility.execute()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/__init__.py", line 395, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 330, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django/core/management/base.py", line 371, in execute
+    output = self.handle(*args, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash ba81988940ce6b7ea641d82897fbf8dc found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!

@@ -33,20 +33,6 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
-    keyword_type = openapi.Parameter(
-        'keyword_type',  # 쿼리 이름
-        openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='keyword_type',  # 쿼리 설명
-        type=openapi.TYPE_STRING
-        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
-    )
-    keyword = openapi.Parameter(
-        'keyword',  # 쿼리 이름
-        openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='keyword',  # 쿼리 설명
-        type=openapi.TYPE_STRING
-        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
-    )
 
     @swagger_auto_schema(
         operation_description="영화 등록(DB)",
@@ -72,6 +58,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                 data['movie'] = create_movie(data).pk
                 data['creation_date'] = timezone.now()
                 data['last_update_date'] = timezone.now()
+                data['status'] = STATUS_ACTIVE
 
                 for category in category_list:
                     category_data = copy.copy(data)
@@ -91,6 +78,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     )
     def update(self, request, movie_id):
         try:
+
             movie = Movie.objects.filter(id=movie_id)
             movie.update(
                 last_update_date=timezone.now(),
@@ -192,15 +180,17 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     keyword_type = openapi.Parameter(
         'keyword_type',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='keyword_type',  # 쿼리 설명
-        type=openapi.TYPE_STRING
+        description='검색 조건: title, director, genre',  # 쿼리 설명
+        type=openapi.TYPE_STRING,
+        example='title'
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
     keyword = openapi.Parameter(
         'keyword',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='keyword',  # 쿼리 설명
-        type=openapi.TYPE_STRING
+        description='검색어',  # 쿼리 설명
+        type=openapi.TYPE_STRING,
+        example='아이언맨'
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
     page_count = openapi.Parameter(
@@ -253,34 +243,48 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
             page_size = request.query_params.get("page_size", 10)
             page_count = request.query_params.get("page_count", 1)
 
-            keyword_type = request.query_params.get('keyword_type', 'All')
+            keyword_type = request.query_params.get('keyword_type', 'None')
+            keyword = request.query_params.get('keyword', '')
             result['movies'] = list()
             movies_append = result['movies'].append
 
-            if keyword_type == 'All':
+            if keyword_type == 'None':
+                movies = Movie.objects.all().prefetch_related('movie_meta').order_by('total_view')
 
-                movies = Movie.objects.all().prefetch_related('movie_meta').order_by('daily_view')
-                paginator = Paginator(movies, page_size)  # 페이지당 page_size 개씩 보여주기
-                page_obj = paginator.get_page(page_count)
-                page_movies = page_obj.object_list
+            elif keyword_type == 'title':
+                movies = Movie.objects.filter(title__contains=keyword).prefetch_related('movie_meta').order_by(
+                    'total_view')
 
-                result['total'] = paginator.count
-                result['page_count'] = int(page_count)
-                result['page_size'] = int(page_size)
-                no = int(page_size) * (int(page_count) - 1) + 1
+            elif keyword_type == 'director':
+                movies = Movie.objects.filter(director__contains=keyword).prefetch_related('movie_meta').order_by(
+                    'total_view')
 
-                for movie in page_movies:
-                    movie_data = dict()
-                    movie_data['no'] = no
-                    movie_data['movie_id'] = movie.id
-                    no += 1
-                    movie_data['title'] = movie.title
-                    movie_data['director'] = movie.director
-                    movie_data['release_date'] = movie.release_date
-                    movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
-                    movie_data['category_list'] = convert_codes_to_name_list(
-                        MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
-                    movies_append(movie_data)
+            elif keyword_type == 'genre':
+                genre = convert_category_to_code(keyword)
+                movies = Movie.objects.filter(movie_meta__type_code=genre).prefetch_related('movie_meta').order_by(
+                    'total_view')
+
+            paginator = Paginator(movies, page_size)  # 페이지당 page_size 개씩 보여주기
+            page_obj = paginator.get_page(page_count)
+            page_movies = page_obj.object_list
+
+            result['total'] = paginator.count
+            result['page_count'] = int(page_count)
+            result['page_size'] = int(page_size)
+            no = int(page_size) * (int(page_count) - 1) + 1
+
+            for movie in page_movies:
+                movie_data = dict()
+                movie_data['no'] = no
+                movie_data['movie_id'] = movie.id
+                no += 1
+                movie_data['title'] = movie.title
+                movie_data['director'] = movie.director
+                movie_data['release_date'] = movie.release_date
+                movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
+                movie_data['category_list'] = convert_codes_to_name_list(
+                    MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
+                movies_append(movie_data)
 
             return Response(data=result, status=status.HTTP_200_OK)
 
