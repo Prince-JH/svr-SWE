@@ -5,7 +5,7 @@ from swe.models import Movie
 
 
 def reset_daily_view():
-    print("Time: " + timezone.now() + "Reset Daily View")
+    print("Time: " + str(timezone.now()) + " Reset Daily View")
     movies = Movie.objects.filter(status=STATUS_ACTIVE)
     movies.update(
         daily_view=0,
