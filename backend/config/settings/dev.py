@@ -22,7 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 secret_file = os.path.join(BASE_DIR, 'secret.json')
 
-POSTER_ROOT = os.path.join(BASE_DIR, '../poster/')
+# POSTER_ROOT = os.path.join(BASE_DIR, '../poster/')
+# POSTER_ROOT = 'https://swe-movie-poster.s3.ap-northeast-2.amazonaws.com/poster/'
+POSTER_ROOT = 'https://swe-movie-poster.s3.ap-northeast-2.amazonaws.com/poster/'
+
 
 CRONJOB_ROOT = os.path.join(BASE_DIR, '../swe/cronjobs')
 LOG_ROOT = os.path.join(BASE_DIR, '../log/')
