@@ -37,14 +37,14 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     keyword = openapi.Parameter(
         'keyword',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='keyword',  # 쿼리 설명
+        description='age or address or profession',  # 쿼리 설명
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
     @swagger_auto_schema(
         operation_description="TOP 조회",
         operation_id='TOP 조회',
-        manual_parameters=[],
+        manual_parameters=[top_count, keyword],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -60,19 +60,6 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                                                      'category_list': openapi.Schema(type=openapi.TYPE_ARRAY,
                                                                                      items=openapi.Items(
                                                                                          type=openapi.TYPE_STRING)),
-                                                     'comments': openapi.Schema(type=openapi.TYPE_ARRAY,
-                                                                                items=openapi.Items(
-                                                                                    type=openapi.TYPE_OBJECT,
-                                                                                    properties={
-                                                                                        'is_mine': openapi.Schema(
-                                                                                            type=openapi.TYPE_BOOLEAN),
-                                                                                        'user_name': openapi.Schema(
-                                                                                            type=openapi.TYPE_STRING),
-                                                                                        'content': openapi.Schema(
-                                                                                            type=openapi.TYPE_STRING),
-                                                                                        'creation_date': openapi.Schema(
-                                                                                            type=openapi.TYPE_STRING),
-                                                                                    })),
                                                      'request_count': openapi.Schema(type=openapi.TYPE_INTEGER),
                                                      'is_request': openapi.Schema(type=openapi.TYPE_BOOLEAN),
                                                  }
@@ -81,6 +68,9 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     def read(self, request, movie_id):
         try:
             user = get_user(request=request)
+            keyword = request.query_params.get('keyword', None)
+
+            # if keyword is None:
             result = dict()
             movie = Movie.objects.get(id=movie_id)
             result['title'] = movie.title
