@@ -45,7 +45,7 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     keyword = openapi.Parameter(
         'keyword',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='age or address or profession',  # 쿼리 설명
+        description='age or address or sex',  # 쿼리 설명
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
@@ -92,15 +92,15 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                             'movie').annotate(count=Count('movie')))
                 elif keyword == 'address':
                     target_address = user.address.split()
-                    dong = target_address[2]
+                    dong = target_address[1]
                     requests = list(
                         Request.objects.select_related('movie').filter(user__address__contains=dong,
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
-                elif keyword == 'profession':
-                    target_profession = user.profession
+                elif keyword == 'sex':
+                    target_sex = user.profession
                     requests = list(
-                        Request.objects.select_related('movie').filter(user__profession=target_profession,
+                        Request.objects.select_related('movie').filter(user__sex=target_sex,
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
 
@@ -120,6 +120,9 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                         movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
                         movie_data['category_list'] = convert_codes_to_name_list(
                             MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
+                        result['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
+                        result['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
+                                                                              user=user).count() > 0 else False
                         result['movies'].append(movie_data)
 
             return Response(data=result, status=status.HTTP_200_OK)
