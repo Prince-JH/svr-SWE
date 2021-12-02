@@ -99,7 +99,6 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                             'movie').annotate(count=Count('movie')))
                 elif keyword == 'profession':
                     target_profession = user.profession
-                    print("TARGET PROFESSION", target_profession)
                     requests = list(
                         Request.objects.select_related('movie').filter(user__profession=target_profession,
                                                                        status=STATUS_ACTIVE).values(
