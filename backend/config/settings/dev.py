@@ -23,7 +23,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, 'secret.json')
 
 # POSTER_ROOT = os.path.join(BASE_DIR, '../poster/')
-# POSTER_ROOT = 'https://swe-movie-poster.s3.ap-northeast-2.amazonaws.com/poster/'
 POSTER_ROOT = 'https://swe-movie-poster.s3.ap-northeast-2.amazonaws.com/poster/'
 
 
@@ -108,26 +107,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'abcd1234',
-        'HOST': 'swe-db.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '5432',
-    }
-}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'swe',
-#         'USER': 'prince',
-#         'PASSWORD': '0000',
-#         'HOST': 'localhost',
-#         'PORT': '5433',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'abcd1234',
+#         'HOST': 'swe-db.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': '5432',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'swe',
+        'USER': 'prince',
+        'PASSWORD': '0000',
+        'HOST': 'localhost',
+        'PORT': '5433',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

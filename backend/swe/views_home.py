@@ -1,4 +1,5 @@
 import copy
+import operator
 import traceback
 from datetime import datetime
 
@@ -6,7 +7,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Count
 from django.utils import timezone
 from django.views import View
 from drf_yasg import openapi
@@ -26,6 +27,13 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     """
     홈
     """
+    access_token = openapi.Parameter(
+        'access-token',  # 쿼리 이름
+        openapi.IN_HEADER,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='ACCESS_TOKEN',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
     top_count = openapi.Parameter(
         'top_count',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
@@ -41,10 +49,11 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
+
     @swagger_auto_schema(
         operation_description="TOP 조회",
         operation_id='TOP 조회',
-        manual_parameters=[top_count, keyword],
+        manual_parameters=[access_token, top_count, keyword],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -65,36 +74,53 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                                                  }
                                              )),
                 })})
-    def read(self, request, movie_id):
+    def read(self, request):
         try:
             user = get_user(request=request)
             keyword = request.query_params.get('keyword', None)
+            top_count = request.query_params.get('top_count', 5)
 
-            # if keyword is None:
             result = dict()
-            movie = Movie.objects.get(id=movie_id)
-            result['title'] = movie.title
-            result['director'] = movie.director
-            result['release_date'] = movie.release_date
-            result['poster_path'] = POSTER_ROOT + movie.poster_path
-            result['category_list'] = convert_codes_to_name_list(
-                MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
-            result['comments'] = list()
-            comments_append = result['comments'].append
-            comments = Comment.objects.select_related('user').filter(movie=movie, status=STATUS_ACTIVE)
-            for comment in comments:
-                comment_data = dict()
-                comment_data['comment_id'] = comment.id
-                comment_data['user_name'] = comment.user.name
-                comment_data['content'] = comment.content
-                comment_data['creation_date'] = comment.creation_date
-                comment_data['is_mine'] = True if comment.user == user else False
-                comments_append(comment_data)
-            # result['comments'] = Comment.objects.filter(movie=movie, status=STATUS_ACTIVE).annotate(
-            #     user_name=F('user__name'), is_mine=F('True')).values('id', 'user_name', 'content', 'creation_date', 'is_mine')
-            result['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
-            result['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
-                                                                  user=user).count() > 0 else False
+            result['movies'] = list()
+
+            if keyword is not None:
+                if keyword == 'age':
+                    target_age = user.age
+                    requests = list(
+                        Request.objects.select_related('movie').filter(user__age__startswith=target_age // 10,
+                                                                       status=STATUS_ACTIVE).values(
+                            'movie').annotate(count=Count('movie')))
+                elif keyword == 'address':
+                    target_address = user.address.split()
+                    dong = target_address[2]
+                    requests = list(
+                        Request.objects.select_related('movie').filter(user__address__contains=dong,
+                                                                       status=STATUS_ACTIVE).values(
+                            'movie').annotate(count=Count('movie')))
+                elif keyword == 'profession':
+                    target_profession = user.profession
+                    print("TARGET PROFESSION", target_profession)
+                    requests = list(
+                        Request.objects.select_related('movie').filter(user__profession=target_profession,
+                                                                       status=STATUS_ACTIVE).values(
+                            'movie').annotate(count=Count('movie')))
+
+                requests.sort(key=(operator.itemgetter('count')), reverse=True)
+
+                target_movies = [requests[no]['movie'] for no in range(top_count)] if len(
+                    requests) > top_count else [requests[no]['movie'] for no in range(len(requests))]
+
+                movies = Movie.objects.filter(id__in=target_movies)
+                for movie in movies:
+                    movie_data = dict()
+                    movie_data['movie_id'] = movie.id
+                    movie_data['title'] = movie.title
+                    movie_data['director'] = movie.director
+                    movie_data['release_date'] = movie.release_date
+                    movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
+                    movie_data['category_list'] = convert_codes_to_name_list(
+                        MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
+                    result['movies'].append(movie_data)
 
             return Response(data=result, status=status.HTTP_200_OK)
 
