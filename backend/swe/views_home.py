@@ -98,12 +98,11 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
                 elif keyword == 'sex':
-                    target_sex = user.profession
+                    target_sex = user.sex
                     requests = list(
                         Request.objects.select_related('movie').filter(user__sex=target_sex,
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
-
                 if len(requests) > 0:
                     requests.sort(key=(operator.itemgetter('count')), reverse=True)
 
@@ -124,6 +123,7 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                         movie_data['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
                                                                               user=user).count() > 0 else False
                         result['movies'].append(movie_data)
+                    result['movies'].sort(key=(operator.itemgetter('request_count')), reverse=True)
 
             return Response(data=result, status=status.HTTP_200_OK)
 
