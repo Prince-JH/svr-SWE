@@ -10,7 +10,7 @@ from rest_framework import status, viewsets, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
-from swe.func import create_member
+from swe.func import create_member, get_user
 from swe.globals import *
 from swe.models import Member
 
@@ -128,6 +128,53 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
             email = request.GET.get('email')
             result = dict()
             result['is_exist'] = True if Member.objects.filter(email=email, status=STATUS_ACTIVE).count() > 0 else False
+
+            return Response(data=result, status=status.HTTP_200_OK)
+
+        except:
+            traceback.print_exc()
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserInfo(viewsets.GenericViewSet, mixins.ListModelMixin, View):
+    """
+    유저 정보
+    """
+    access_token = openapi.Parameter(
+        'access-token',  # 쿼리 이름
+        openapi.IN_HEADER,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='ACCESS_TOKEN',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
+    @swagger_auto_schema(
+        operation_description="유저 정보 조회",
+        operation_id='유저 정보 조회',
+        manual_parameters=[access_token],
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'email': openapi.Schema(type=openapi.TYPE_STRING),
+                    'name': openapi.Schema(type=openapi.TYPE_STRING),
+                    'address': openapi.Schema(type=openapi.TYPE_STRING),
+                    'age': openapi.Schema(type=openapi.TYPE_INTEGER),
+                    'sex': openapi.Schema(type=openapi.TYPE_STRING),
+                    'phone_no': openapi.Schema(type=openapi.TYPE_STRING),
+                })})
+    def read(self, request):
+        try:
+            user = get_user(request=request)
+            if user is None:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            result = dict()
+            result['email'] = user.email
+            result['name'] = user.name
+            result['address'] = user.address
+            result['age'] = user.age
+            result['sex'] = user.sex
+            result['phone_no'] = user.phone_no
 
             return Response(data=result, status=status.HTTP_200_OK)
 
