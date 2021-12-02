@@ -104,22 +104,23 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
 
-                requests.sort(key=(operator.itemgetter('count')), reverse=True)
+                if len(requests) > 0:
+                    requests.sort(key=(operator.itemgetter('count')), reverse=True)
 
-                target_movies = [requests[no]['movie'] for no in range(top_count)] if len(
-                    requests) > top_count else [requests[no]['movie'] for no in range(len(requests))]
+                    target_movies = [requests[no]['movie'] for no in range(top_count)] if len(
+                        requests) > top_count else [requests[no]['movie'] for no in range(len(requests))]
 
-                movies = Movie.objects.filter(id__in=target_movies)
-                for movie in movies:
-                    movie_data = dict()
-                    movie_data['movie_id'] = movie.id
-                    movie_data['title'] = movie.title
-                    movie_data['director'] = movie.director
-                    movie_data['release_date'] = movie.release_date
-                    movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
-                    movie_data['category_list'] = convert_codes_to_name_list(
-                        MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
-                    result['movies'].append(movie_data)
+                    movies = Movie.objects.filter(id__in=target_movies)
+                    for movie in movies:
+                        movie_data = dict()
+                        movie_data['movie_id'] = movie.id
+                        movie_data['title'] = movie.title
+                        movie_data['director'] = movie.director
+                        movie_data['release_date'] = movie.release_date
+                        movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
+                        movie_data['category_list'] = convert_codes_to_name_list(
+                            MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
+                        result['movies'].append(movie_data)
 
             return Response(data=result, status=status.HTTP_200_OK)
 
