@@ -120,8 +120,8 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                         movie_data['poster_path'] = POSTER_ROOT + movie.poster_path
                         movie_data['category_list'] = convert_codes_to_name_list(
                             MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
-                        result['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
-                        result['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
+                        movie_data['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
+                        movie_data['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
                                                                               user=user).count() > 0 else False
                         result['movies'].append(movie_data)
 
