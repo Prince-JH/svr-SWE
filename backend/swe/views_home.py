@@ -78,7 +78,7 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         try:
             user = get_user(request=request)
             keyword = request.query_params.get('keyword', None)
-            top_count = request.query_params.get('top_count', 5)
+            top_count = int(request.query_params.get('top_count', 5))
 
             result = dict()
             result['movies'] = list()
