@@ -99,7 +99,7 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                 result = dict()
                 token = Token.objects.get_or_create(user=user)[0].key
                 result['token'] = token
-                result['role'] = member.role
+                result['role'] = member[0].role
                 member.update(
                     access_token=token,
                     last_update_date=timezone.now()

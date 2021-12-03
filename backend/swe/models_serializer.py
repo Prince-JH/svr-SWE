@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from swe.models import Code, Movie, MovieMeta, Member, Request, Comment
+from swe.models import Code, Movie, MovieMeta, Member, Request, Comment, ReOpen
 
 
 class SerializerCode(serializers.ModelSerializer):
@@ -36,4 +36,10 @@ class SerializerRequest(serializers.ModelSerializer):
 class SerializerComment(serializers.ModelSerializer):
     class Meta:
         model = Comment
+        fields = '__all__'
+
+
+class SerializerReOpen(serializers.ModelSerializer):
+    class Meta:
+        model = ReOpen
         fields = '__all__'

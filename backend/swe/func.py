@@ -2,7 +2,7 @@ from django.db import transaction
 
 from swe.models import Code, Member
 from swe.models_serializer import SerializerMember, SerializerMovie, SerializerMovieMeta, SerializerComment, \
-    SerializerRequest
+    SerializerRequest, SerializerReOpen
 
 
 def convert_category_to_code(category):
@@ -41,6 +41,12 @@ def create_request(data):
     request = SerializerRequest(data=data)
     request.is_valid(raise_exception=True)
     return request.save()
+
+
+def create_re_open(data):
+    re_open = SerializerReOpen(data=data)
+    re_open.is_valid(raise_exception=True)
+    return re_open.save()
 
 
 def get_user(*args, **kwargs):

@@ -91,6 +91,18 @@ class Request(LifeCycleModel):
         yield 'request_id', self.pk
 
 
+class ReOpen(LifeCycleModel):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
+                              related_name='re_open')
+
+    class Meta:
+        db_table = 're_open'
+        app_label = 'swe'
+
+    def __iter__(self):
+        yield 're_open_id', self.pk
+
+
 class Comment(LifeCycleModel):
     request = models.ForeignKey(Request, on_delete=models.CASCADE, db_column='request_id',
                                 related_name='comment', null=True)

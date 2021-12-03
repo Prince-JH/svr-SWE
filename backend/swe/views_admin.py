@@ -52,7 +52,7 @@ class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     keyword_value = openapi.Parameter(
         'keyword_value',  # 쿼리 이름
         openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
-        description='선택한 키워드의 값',  # 쿼리 설명
+        description='선택한 키워드의 값: 20(20대), 30(30대), 40(40대), 강남구, 관악구, 서대문구, 동작구, M, F',  # 쿼리 설명
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
@@ -61,7 +61,7 @@ class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         operation_description="통계 조회",
         operation_id='통계 조회',
         manual_parameters=[access_token, top_count, keyword, keyword_value],
-        tags=['home'],
+        tags=['admin'],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -85,7 +85,10 @@ class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     def read(self, request):
         try:
             user = get_user(request=request)
+            if user.role != 'admin':
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
             keyword = request.query_params.get('keyword', None)
+            keyword_value = request.query_params.get('keyword_value', None)
             top_count = int(request.query_params.get('top_count', 5))
 
             result = dict()
@@ -93,20 +96,20 @@ class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
 
             if keyword is not None:
                 if keyword == 'age':
-                    target_age = user.age
+                    target_age = int(keyword_value)
                     requests = list(
                         Request.objects.select_related('movie').filter(user__age__startswith=target_age // 10,
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
                 elif keyword == 'address':
-                    target_address = user.address.split()
+                    target_address = keyword_value
                     dong = target_address[1]
                     requests = list(
                         Request.objects.select_related('movie').filter(user__address__contains=dong,
                                                                        status=STATUS_ACTIVE).values(
                             'movie').annotate(count=Count('movie')))
                 elif keyword == 'sex':
-                    target_sex = user.sex
+                    target_sex = keyword_value
                     requests = list(
                         Request.objects.select_related('movie').filter(user__sex=target_sex,
                                                                        status=STATUS_ACTIVE).values(
@@ -129,7 +132,7 @@ class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                             MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
                         movie_data['request_count'] = Request.objects.filter(movie=movie, status=STATUS_ACTIVE).count()
                         movie_data['is_request'] = True if Request.objects.filter(movie=movie, status=STATUS_ACTIVE,
-                                                                              user=user).count() > 0 else False
+                                                                                  user=user).count() > 0 else False
                         result['movies'].append(movie_data)
                     result['movies'].sort(key=(operator.itemgetter('request_count')), reverse=True)
 

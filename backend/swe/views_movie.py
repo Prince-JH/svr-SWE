@@ -239,8 +239,6 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     def read(self, request):
         try:
 
-            print("movie list")
-
             result = dict()
 
             page_size = request.query_params.get("page_size", 10)
