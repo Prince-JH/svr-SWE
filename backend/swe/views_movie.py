@@ -249,20 +249,20 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
             movies_append = result['movies'].append
 
             if keyword_type == 'None':
-                movies = Movie.objects.all().prefetch_related('movie_meta').order_by('total_view')
+                movies = Movie.objects.all().prefetch_related('movie_meta').order_by('id')
 
             elif keyword_type == 'title':
                 movies = Movie.objects.filter(title__contains=keyword).prefetch_related('movie_meta').order_by(
-                    'total_view')
+                    'id')
 
             elif keyword_type == 'director':
                 movies = Movie.objects.filter(director__contains=keyword).prefetch_related('movie_meta').order_by(
-                    'total_view')
+                    'id')
 
             elif keyword_type == 'genre':
                 genre = convert_category_to_code(keyword)
                 movies = Movie.objects.filter(movie_meta__type_code=genre).prefetch_related('movie_meta').order_by(
-                    'total_view')
+                    'id')
 
             paginator = Paginator(movies, page_size)  # 페이지당 page_size 개씩 보여주기
             page_obj = paginator.get_page(page_count)
