@@ -37,6 +37,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     @swagger_auto_schema(
         operation_description="영화 등록(DB)",
         operation_id='영화 등록(DB)',
+        tags=['movie'],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -97,6 +98,7 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         operation_description="영화 조회",
         operation_id='영화 조회',
         manual_parameters=[access_token],
+        tags=['movie'],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -212,6 +214,7 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         operation_description="영화 리스트 조회",
         operation_id='영화 리스트 조회',
         manual_parameters=[keyword_type, keyword, page_size, page_count],
+        tags=['movie'],
         responses={
             200: openapi.Schema(
                 type=openapi.TYPE_OBJECT,

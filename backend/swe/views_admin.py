@@ -23,9 +23,9 @@ from swe.globals import *
 from swe.models import Member, Movie, Code, MovieMeta, Request, Comment
 
 
-class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
+class ViewAdmin(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     """
-    홈
+    관리자
     """
     access_token = openapi.Parameter(
         'access-token',  # 쿼리 이름
@@ -49,11 +49,18 @@ class ViewHome(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
+    keyword_value = openapi.Parameter(
+        'keyword_value',  # 쿼리 이름
+        openapi.IN_QUERY,  # IN_QUERY, IN_PATH, IN_BODY, IN_FROM, IN_HEADER
+        description='선택한 키워드의 값',  # 쿼리 설명
+        type=openapi.TYPE_STRING
+        # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
+    )
 
     @swagger_auto_schema(
-        operation_description="TOP 조회",
-        operation_id='TOP 조회',
-        manual_parameters=[access_token, top_count, keyword],
+        operation_description="통계 조회",
+        operation_id='통계 조회',
+        manual_parameters=[access_token, top_count, keyword, keyword_value],
         tags=['home'],
         responses={
             200: openapi.Schema(

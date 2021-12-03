@@ -67,6 +67,7 @@ class Member(LifeCycleModel):
     access_token = models.TextField(default='')
     password = models.TextField(default='')
     phone_no = models.CharField(max_length=50, default='')
+    role = models.CharField(max_length=20, default='user')
 
     class Meta:
         db_table = 'member'
