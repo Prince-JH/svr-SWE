@@ -18,7 +18,8 @@ urlpatterns = [
     path('swe/v1/comments', ViewComment.as_view({"post": "create"}), name='comments'),
     path('swe/v1/comments/<comment_id>', ViewComment.as_view({"put": "update"}), name='comments'),
 
-    path('swe/v1/request', ViewRequest.as_view({"post": "create"}), name='request'),
+    path('swe/v1/request', ViewRequest.as_view({"post": "create", "get": "read"}), name='request'),
+
     path('swe/v1/home', ViewHome.as_view({"get": "read"}), name='home'),
     path('swe/v1/admin/statistics', ViewAdmin.as_view({"get": "read"}), name='admin'),
     path('swe/v1/admin/re-open', ViewReOpen.as_view({"post": "create"}), name='re-open'),
