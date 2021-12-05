@@ -102,8 +102,9 @@ class ViewRequest(viewsets.GenericViewSet, mixins.ListModelMixin, View):
             result['movies'] = list()
             movies_append = result['movies'].append
 
-            movies_list = Request.objects.filter(user_id=user.pk, status=STATUS_ACTIVE).values_list('movie', flat=True)
-            movies_list = list(set(movies_list))
+            movies_list = Request.objects.filter(user_id=user.pk, status=STATUS_ACTIVE).values_list('movie',
+                                                                                                    flat=True).distinct()
+            # movies_list = list(set(movies_list))
             movies = Movie.objects.filter(id__in=movies_list)
             for movie in movies:
                 movie_data = dict()
