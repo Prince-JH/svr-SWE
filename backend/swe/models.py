@@ -1,7 +1,13 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
+
 # Create your models here.
+from django.utils import timezone
+
+
 class LifeCycleModel(models.Model):
     status = models.CharField(max_length=20, default='')
     creation_date = models.DateTimeField(auto_now_add=True)
@@ -39,8 +45,29 @@ class Movie(LifeCycleModel):
         db_table = 'movie'
         app_label = 'swe'
 
+    @property
+    def get_title(self):
+        "Returns the movie's title."
+        if self.release_date < timezone.now():
+            return "(개봉)" + self.title
+        else:
+            return "(미개봉)" + self.title
+
     def __iter__(self):
         yield 'movie_id', self.pk
+
+
+class MovieImage(LifeCycleModel):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
+                              related_name='movie_image_meta')
+    image = models.ImageField(null=True, default=True)
+
+    class Meta:
+        db_table = 'movie_image'
+        app_label = 'swe'
+
+    def __iter__(self):
+        yield 'movie_image_id', self.pk
 
 
 class MovieMeta(LifeCycleModel):
@@ -64,7 +91,7 @@ class Member(LifeCycleModel):
     address = models.TextField(default='')
     age = models.IntegerField(db_index=True, default=0)
     sex = models.CharField(max_length=10, default='')
-    access_token = models.TextField(default='')
+    refresh_token = models.TextField(default='')
     password = models.TextField(default='')
     phone_no = models.CharField(max_length=50, default='')
     role = models.CharField(max_length=20, default='user')
@@ -111,7 +138,6 @@ class Comment(LifeCycleModel):
     user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
                              related_name='comment')
     content = models.TextField(default='')
-
 
     class Meta:
         db_table = 'comment'

@@ -1,4 +1,6 @@
 from django.urls import path
+from rest_framework_jwt.views import refresh_jwt_token, verify_jwt_token, obtain_jwt_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from swe.views_admin import ViewAdmin
 from swe.views_comments import ViewComment
@@ -23,6 +25,13 @@ urlpatterns = [
     path('swe/v1/home', ViewHome.as_view({"get": "read"}), name='home'),
     path('swe/v1/admin/statistics', ViewAdmin.as_view({"get": "read"}), name='admin'),
     path('swe/v1/admin/re-open', ViewReOpen.as_view({"post": "create"}), name='re-open'),
-    path('swe/v1/admin/re-open/list', ViewReOpen.as_view({"get": "read"}), name='re-open')
+    path('swe/v1/admin/re-open/list', ViewReOpen.as_view({"get": "read"}), name='re-open'),
+
+    # path('swe/v1/token', obtain_jwt_token),
+    # path('swe/v1/token/verify', verify_jwt_token),
+    # path('swe/v1/token/refresh', refresh_jwt_token),
+
+    path('swe/v1/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('swe/v1/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
 
 ]

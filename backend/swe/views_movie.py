@@ -137,9 +137,10 @@ class ViewMovie(viewsets.GenericViewSet, mixins.ListModelMixin, View):
             user = get_user(request=request)
             result = dict()
             movie = Movie.objects.get(id=movie_id)
-            result['title'] = movie.title
+            result['title'] = movie.get_title
             result['director'] = movie.director
             result['release_date'] = movie.release_date
+            # result['title'], result['director'], result['release_date'] = movie.movie_info_dto
             result['poster_path'] = POSTER_ROOT + movie.poster_path
             result['category_list'] = convert_codes_to_name_list(
                 MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
@@ -287,7 +288,7 @@ class ViewMovieList(viewsets.GenericViewSet, mixins.ListModelMixin, View):
                     MovieMeta.objects.filter(movie=movie).values_list('type_code', flat=True))
                 movies_append(movie_data)
 
-            return Response(data=result, status=status.HTTP_200_OK)
+            return Response(headers={'Location': 'swe/v1/movies'}, data=result, status=status.HTTP_302_FOUND)
 
         except:
             traceback.print_exc()

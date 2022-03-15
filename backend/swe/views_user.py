@@ -6,11 +6,12 @@ from django.utils import timezone
 from django.views import View
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets, mixins
+from rest_framework import status, viewsets, mixins, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from swe.func import create_member, get_user
+from swe.func import create_member, get_user, token_obtain_pair
 from swe.globals import *
 from swe.models import Member
 
@@ -33,6 +34,8 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
         type=openapi.TYPE_STRING
         # TYPE_STRING, TYPE_NUMBER, TYPE_OBJECT, TYPE_INTEGER, TYPE_BOOLEAN, TYPE_ARRAY, TYPE_FILE
     )
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
 
     @swagger_auto_schema(
         operation_description="회원 가입",
@@ -92,16 +95,29 @@ class UserSign(viewsets.GenericViewSet, mixins.ListModelMixin, View):
     )
     def update(self, request):
         try:
+            authentication_classes = []
             data = request.data
             user = User.objects.get(username=data['email'])
             member = Member.objects.filter(email=data['email'], status=STATUS_ACTIVE)
+
             if check_password((data['password']), user.password):
+
+                user_info = dict()
+                user_info['username'] = data['email']
+                user_info['password'] = data['password']
+
+                # tokens = token_obtain_pair(user_info)
+                # print("tokens:", tokens)
+                access, refresh = token_obtain_pair(user_info)
+                print(f"access: {access}, refresh: {refresh}")
+
                 result = dict()
-                token = Token.objects.get_or_create(user=user)[0].key
-                result['token'] = token
+                # token = Token.objects.get_or_create(user=user)[0].key
+                result['access'] = access
+                result['refresh'] = refresh
                 result['role'] = member[0].role
                 member.update(
-                    access_token=token,
+                    refresh_token=refresh,
                     last_update_date=timezone.now()
                 )
             else:

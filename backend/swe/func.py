@@ -1,4 +1,12 @@
+import json
+import traceback
+
+import requests
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import transaction
+from rest_framework.reverse import reverse
+from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 
 from swe.models import Code, Member
 from swe.models_serializer import SerializerMember, SerializerMovie, SerializerMovieMeta, SerializerComment, \
@@ -58,6 +66,9 @@ def get_user(*args, **kwargs):
                 request = kwargs['request']
                 if request.META.get('HTTP_ACCESS_TOKEN') is not None:
                     user = Member.objects.get(access_token=request.META.get('HTTP_ACCESS_TOKEN'))
+                elif request.META.get('HTTP_AUTHORIZATION') is not None:
+                    username = request.user
+                    user = Member.objects.get(user__username=username)
             elif 'access_token' in kwargs:
                 access_token = kwargs['access_token']
                 user = Member.objects.get(access_token=access_token)
@@ -70,3 +81,21 @@ def get_user(*args, **kwargs):
         print('err:get_user_info', err)
         # ret_code = status.HTTP_400_BAD_REQUEST
         return None
+
+
+def token_obtain_pair(user_info):
+    print("token_obtain_pair")
+    try:
+        headers = {
+            "Content-Type": "application/json"
+        }
+        url = "http://127.0.0.1:8000" + reverse('token_obtain_pair')
+        res = requests.post(url, data=json.dumps(user_info), headers=headers)
+        res_data = json.loads(res.text)
+
+        print("res_data", res_data)
+        access = res_data['access']
+        refresh = res_data['refresh']
+        return access, refresh
+    except:
+        traceback.print_exc()

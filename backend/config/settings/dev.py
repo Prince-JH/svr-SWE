@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
@@ -24,7 +24,6 @@ secret_file = os.path.join(BASE_DIR, 'secret.json')
 
 # POSTER_ROOT = os.path.join(BASE_DIR, '../poster/')
 POSTER_ROOT = 'https://swe-movie-poster.s3.ap-northeast-2.amazonaws.com/poster/'
-
 
 CRONJOB_ROOT = os.path.join(BASE_DIR, '../swe/cronjobs')
 LOG_ROOT = os.path.join(BASE_DIR, '../log/')
@@ -82,6 +81,38 @@ CRONJOBS = [
     ('* 0 * * *', 'swe.cronjobs.reset_daily_view', ">> " + LOG_ROOT + "reset_daily_view_cronjob.log"),
 ]
 
+REST_FRAMEWORK = {
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.TokenAuthentication',  # Scott: This sets the default auth type.
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=28),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
+
+# JWT_AUTH = {
+#     'JWT_SECRET_KEY': SECRET_KEY,
+#     'JWT_ALGORITHM': 'HS256',
+#     'JWT_ALLOW_REFRESH': True,
+#     'JWT_EXPIRATION_DELTA': timedelta(days=7),  # access-token expiration
+#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=28)  # refresh-token expiration
+# }
+
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 
 ROOT_URLCONF = 'config.urls'
@@ -107,26 +138,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'abcd1234',
-        'HOST': 'swe-db.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '5432',
-    }
-}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'swe',
-#         'USER': 'prince',
-#         'PASSWORD': '0000',
-#         'HOST': 'localhost',
-#         'PORT': '5433',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'abcd1234',
+#         'HOST': 'swe-db.cmwlrea0pvtl.ap-northeast-2.rds.amazonaws.com',
+#         'PORT': '5432',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'swe',
+        'USER': 'prince',
+        'PASSWORD': '0000',
+        'HOST': 'localhost',
+        'PORT': '5433',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
