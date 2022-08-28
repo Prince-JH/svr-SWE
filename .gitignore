@@ -1,0 +1,11 @@
+# virtual env
+venv
+
+# DB
+db.sqlite3
+
+# log
+log
+
+# Secret Key
+config/secret.json
