@@ -34,11 +34,16 @@ class ScheduleAPITests(TestCase):
 class TestUtil:
     @pytest.mark.django_db
     def test_difference_between_update_and_save(self, code_dummy_A, code_dummy_B):
-        print()
-        print(code_dummy_A.last_update_date)
-        print(code_dummy_B.last_update_date)
 
-        Code.objcets.get(pk=code_dummy_A.pk).save()
-        Code.objcets.filter(pk=code_dummy_B.pk).update()
-        print(Code.objcets.get(pk=code_dummy_A.pk).last_update_date)
-        print(Code.objcets.get(pk=code_dummy_B.pk).last_update_date)
+        before_A_last_update_date = code_dummy_A.last_update_date
+        before_B_last_update_date = code_dummy_B.last_update_date
+
+        # update
+        Code.objects.get(pk=code_dummy_A.pk).save()
+        Code.objects.filter(pk=code_dummy_B.pk).update()
+
+        after_A_last_update_date = Code.objects.get(pk=code_dummy_A.pk).last_update_date
+        after_B_last_update_date = Code.objects.get(pk=code_dummy_B.pk).last_update_date
+
+        assert before_A_last_update_date != after_A_last_update_date
+        assert before_B_last_update_date == after_B_last_update_date
