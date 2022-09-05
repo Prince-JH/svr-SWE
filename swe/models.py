@@ -9,11 +9,9 @@ from django.utils import timezone
 
 
 class LifeCycleModel(models.Model):
-    status = models.CharField(max_length=20, default='')
-    creation_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(null=True)
-    last_update_date = models.DateTimeField(auto_now=True)
-    last_updated_by = models.CharField(max_length=50, default='')
+    is_valid = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    deleted_at = models.DateTimeField(null=True)
 
     class Meta:
         abstract = True
@@ -39,7 +37,6 @@ class Movie(LifeCycleModel):
     release_date = models.DateTimeField()
     total_view = models.IntegerField(default=0)
     daily_view = models.IntegerField(default=0)
-    poster_path = models.TextField(default='')
 
     class Meta:
         db_table = 'movie'
