@@ -3,7 +3,9 @@ from swe import views as v
 
 urlpatterns = [
     path('movies/', v.MovieList.as_view()),
-    path('movies/<id>', v.MovieDetail.as_view()),
+    path('movies/<id>/', v.MovieDetail.as_view()),
+    path('movies-images/', v.MovieImageList.as_view()),
+    path('movies-images/<id>/', v.MovieImageDetail.as_view()),
 
     # path('swe/v1/user', UserSign.as_view({"post": "create", "put": "update", "get": "read"}), name='user-sign'),
     # path('swe/v1/user/info', UserInfo.as_view({"get": "read"}), name='user-info'),

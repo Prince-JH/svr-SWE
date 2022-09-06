@@ -9,28 +9,6 @@ import json
 from swe.models import Code
 
 
-class ScheduleAPITests(TestCase):
-    databases = '__all__'
-
-    def test_save_teacher_schedule(self):
-        client = APIClient()
-        url = reverse('user-sign')
-        data = {
-            "email": "temp@temp.com",
-            "name": "temp",
-            "age": 25,
-            "password": "123",
-            "password_confirm": "123"
-        }
-
-        response = client.post(url, json.dumps(data), content_type='application/json')
-        self.assertEquals(response.status_code, 201)
-
-        response = client.get(url + '?email=temp@temp.com', content_type='application/json')
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.data['is_exist'], True)
-
-
 class TestUtil:
     @pytest.mark.django_db
     def test_difference_between_update_and_save(self, code_dummy_A, code_dummy_B):
@@ -66,8 +44,40 @@ class TestViewsMovie:
 
     @pytest.mark.django_db
     def test_search_a_movie_should_return_one(self, client, movie_dummy):
-        response = client.get(f'/api/movies/{movie_dummy.pk}')
+        response = client.get(f'/api/movies/{movie_dummy.pk}/')
 
         content = json.loads(response.content)
         assert response.status_code == 200
         assert content['title'] == movie_dummy.title
+
+
+class TestViewsMovieImage:
+    @pytest.mark.django_db
+    def test_list_should_return_empty_list(self, client):
+        response = client.get('/api/movies-images/')
+        assert response.status_code == 200
+        assert json.loads(response.content) == []
+
+    @pytest.mark.django_db
+    def test_list_should_return_one(self, client, movie_dummy, movie_image_dummy):
+        response = client.get('/api/movies-images/')
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1
+
+        assert movie_image_dummy.movie == movie_dummy
+
+    @pytest.mark.django_db
+    def test_search_a_movie_image_should_return_one(self, client, movie_image_dummy):
+        response = client.get(f'/api/movies-images/{movie_image_dummy.pk}/')
+
+        content = json.loads(response.content)
+        assert response.status_code == 200
+        assert content['url'] == movie_image_dummy.url
+
+    @pytest.mark.django_db
+    def test_list_by_movie(self, client, movie_dummy, movie_image_dummy):
+        response = client.get(f'/api/movies-images/?movie={movie_dummy.pk}/')
+
+        content = json.loads(response.content)
+        assert response.status_code == 200
+        assert 1 == len(content)
