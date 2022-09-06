@@ -34,7 +34,6 @@ class ScheduleAPITests(TestCase):
 class TestUtil:
     @pytest.mark.django_db
     def test_difference_between_update_and_save(self, code_dummy_A, code_dummy_B):
-
         before_A_last_update_date = code_dummy_A.last_update_date
         before_B_last_update_date = code_dummy_B.last_update_date
 
@@ -47,3 +46,20 @@ class TestUtil:
 
         assert before_A_last_update_date != after_A_last_update_date
         assert before_B_last_update_date == after_B_last_update_date
+
+
+class TestViewsMovie:
+    @pytest.mark.django_db
+    def test_list_should_return_empty_list(self, client):
+        response = client.get('/api/movies/')
+        assert response.status_code == 200
+        assert json.loads(response.content) == []
+
+    @pytest.mark.django_db
+    def test_list_should_return_one(self, client, movie_dummy):
+        response = client.get('/api/movies/')
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1
+
+        assert movie_dummy.total_view == 0
+        assert movie_dummy.daily_view == 0
