@@ -57,7 +57,7 @@ class Movie(LifeCycleModel):
 class MovieImage(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='movie_image_meta')
-    image = models.TextField(null=True, default=True)
+    url = models.TextField(null=True, default=True)
 
     class Meta:
         db_table = 'movie_image'
