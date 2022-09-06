@@ -63,3 +63,11 @@ class TestViewsMovie:
 
         assert movie_dummy.total_view == 0
         assert movie_dummy.daily_view == 0
+
+    @pytest.mark.django_db
+    def test_search_a_movie_should_return_one(self, client, movie_dummy):
+        response = client.get(f'/api/movies/{movie_dummy.pk}')
+
+        content = json.loads(response.content)
+        assert response.status_code == 200
+        assert content['title'] == movie_dummy.title

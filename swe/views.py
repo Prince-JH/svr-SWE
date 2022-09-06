@@ -12,3 +12,9 @@ class MovieList(g.ListCreateAPIView):
     filter_backends = [rf.OrderingFilter]
     ordering_field = ['id']
     ordering = ['-id']
+
+
+class MovieDetail(g.RetrieveUpdateDestroyAPIView):
+    queryset = apps.get_model('swe', 'Movie').objects.all()
+    serializer_class = s.Movie
+    lookup_field = 'id'
