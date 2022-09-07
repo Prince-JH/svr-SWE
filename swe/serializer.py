@@ -35,3 +35,32 @@ class MovieImage(ModelSerializer):
     class Meta:
         model = m.MovieImage
         exclude = ('id',)
+
+
+class Genre(ModelSerializer):
+    name: Field = CharField()
+    is_valid: Field = BooleanField(read_only=True)
+    created_at: Field = DateTimeField(read_only=True)
+    deleted_at: Field = DateTimeField(read_only=True)
+
+    class Meta:
+        model = m.Genre
+        exclude = ('id',)
+
+
+class MovieGenreAssoc(ModelSerializer):
+    movie: Field = SlugRelatedField(
+        slug_field='id',
+        queryset=apps.get_model('swe', 'Movie').objects.all()
+    )
+    genre: Field = SlugRelatedField(
+        slug_field='id',
+        queryset=apps.get_model('swe', 'Genre').objects.all()
+    )
+    is_valid: Field = BooleanField(read_only=True)
+    created_at: Field = DateTimeField(read_only=True)
+    deleted_at: Field = DateTimeField(read_only=True)
+
+    class Meta:
+        model = m.MovieGenreAssoc
+        exclude = ('id',)

@@ -3,7 +3,6 @@ import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
-
 # Create your models here.
 from django.utils import timezone
 
@@ -17,23 +16,9 @@ class LifeCycleModel(models.Model):
         abstract = True
 
 
-class Code(LifeCycleModel):
-    code = models.CharField(db_index=True, max_length=100, default='')
-    name = models.CharField(db_index=True, max_length=200, default='')
-    description = models.TextField(null=True)
-    parent_code = models.CharField(max_length=100, null=True)
-
-    class Meta:
-        db_table = 'code'
-        app_label = 'swe'
-
-    def __iter__(self):
-        yield 'code_id', self.pk
-
-
 class Movie(LifeCycleModel):
-    title = models.CharField(db_index=True, max_length=200, default='')
-    director = models.CharField(db_index=True, max_length=200, default='')
+    title = models.CharField(db_index=True, max_length=100, default='')
+    director = models.CharField(db_index=True, max_length=100, default='')
     release_date = models.DateTimeField()
     total_view = models.IntegerField(default=0)
     daily_view = models.IntegerField(default=0)
@@ -50,9 +35,6 @@ class Movie(LifeCycleModel):
         else:
             return "(미개봉)" + self.title
 
-    def __iter__(self):
-        yield 'movie_id', self.pk
-
 
 class MovieImage(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
@@ -63,21 +45,24 @@ class MovieImage(LifeCycleModel):
         db_table = 'movie_image'
         app_label = 'swe'
 
-    def __iter__(self):
-        yield 'movie_image_id', self.pk
 
-
-class MovieMeta(LifeCycleModel):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
-                              related_name='movie_meta')
-    type_code = models.CharField(db_index=True, max_length=50, default='')
+class Genre(LifeCycleModel):
+    name = models.CharField(db_index=True, max_length=50, default='')
 
     class Meta:
-        db_table = 'movie_meta'
+        db_table = 'genre'
         app_label = 'swe'
 
-    def __iter__(self):
-        yield 'movie_meta_id', self.pk
+
+class MovieGenreAssoc(LifeCycleModel):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
+                              related_name='movie')
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, db_column='genre_id',
+                              related_name='genre')
+
+    class Meta:
+        db_table = 'movie_genre_assoc'
+        app_label = 'swe'
 
 
 class Member(LifeCycleModel):
@@ -97,9 +82,6 @@ class Member(LifeCycleModel):
         db_table = 'member'
         app_label = 'swe'
 
-    def __iter__(self):
-        yield 'member_id', self.pk
-
 
 class Request(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
@@ -111,9 +93,6 @@ class Request(LifeCycleModel):
         db_table = 'request'
         app_label = 'swe'
 
-    def __iter__(self):
-        yield 'request_id', self.pk
-
 
 class ReOpen(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
@@ -122,9 +101,6 @@ class ReOpen(LifeCycleModel):
     class Meta:
         db_table = 're_open'
         app_label = 'swe'
-
-    def __iter__(self):
-        yield 're_open_id', self.pk
 
 
 class Comment(LifeCycleModel):
@@ -139,6 +115,3 @@ class Comment(LifeCycleModel):
     class Meta:
         db_table = 'comment'
         app_label = 'swe'
-
-    def __iter__(self):
-        yield 'comment_id', self.pk
