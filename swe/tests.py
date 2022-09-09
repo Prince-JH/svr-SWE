@@ -1,3 +1,4 @@
+
 import pytest
 
 import json
@@ -29,12 +30,17 @@ class TestViewsMovie:
 
     @pytest.mark.django_db
     def test_search_by_movie_ids_should_return_all_matching_movies(self, client, movie_dummy_1, movie_dummy_2):
-        response = client.get(f'/api/movies/?search=movie/')
+        response = client.get(f'/api/movies/?ids={movie_dummy_1.pk, movie_dummy_2.pk}')
         content = json.loads(response.content)
         assert response.status_code == 200
-        # assert len(response) == 2
-        print(content)
-        # assert content['title'] == movie_dummy_1.title
+        assert len(content) == 2
+
+    @pytest.mark.django_db
+    def test_search_by_movie_title_should_return_matching_movie(self, client, movie_dummy_1, movie_dummy_2):
+        response = client.get(f'/api/movies/?search={movie_dummy_2.title}')
+        content = json.loads(response.content)
+        assert response.status_code == 200
+        assert len(content) == 1
 
 
 class TestViewsMovieImage:

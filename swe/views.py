@@ -2,6 +2,7 @@ from django.apps import apps
 
 from rest_framework import generics as g
 from rest_framework import filters as rf
+from swe import filters as f
 
 from swe import serializer as s
 
@@ -17,10 +18,10 @@ search_field
 class MovieList(g.ListCreateAPIView):
     queryset = apps.get_model('swe', 'Movie').objects.all()
     serializer_class = s.Movie
-    filter_backends = [rf.OrderingFilter, rf.SearchFilter]
+    filter_backends = [rf.OrderingFilter, rf.SearchFilter, f.IdsFilter]
     ordering_field = ['id']
     ordering = ['-id']
-    search_fields = ['title']
+    search_fields = ['title', 'director']
 
 
 class MovieDetail(g.RetrieveUpdateDestroyAPIView):
