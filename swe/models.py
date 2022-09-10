@@ -65,28 +65,17 @@ class MovieGenreAssoc(LifeCycleModel):
         app_label = 'swe'
 
 
-class Member(LifeCycleModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.CharField(db_index=True, max_length=200, default='')
-    profession = models.CharField(max_length=50, default='')
-    name = models.CharField(max_length=50, default='')
-    address = models.TextField(default='')
-    age = models.IntegerField(db_index=True, default=0)
-    sex = models.CharField(max_length=10, default='')
-    refresh_token = models.TextField(default='')
-    password = models.TextField(default='')
-    phone_no = models.CharField(max_length=50, default='')
-    role = models.CharField(max_length=20, default='user')
+class User(User, LifeCycleModel):
 
     class Meta:
-        db_table = 'member'
+        db_table = 'user'
         app_label = 'swe'
 
 
 class Request(LifeCycleModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='request')
-    user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id',
                              related_name='request')
 
     class Meta:
@@ -108,7 +97,7 @@ class Comment(LifeCycleModel):
                                 related_name='comment', null=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, db_column='movie_id',
                               related_name='comment')
-    user = models.ForeignKey(Member, on_delete=models.CASCADE, db_column='user_id',
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id',
                              related_name='comment')
     content = models.TextField(default='')
 
