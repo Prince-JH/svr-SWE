@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -65,11 +67,21 @@ class MovieGenreAssoc(LifeCycleModel):
         app_label = 'swe'
 
 
-class User(User, LifeCycleModel):
+class UserProfile(LifeCycleModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profession = models.CharField(max_length=50, default='')
+    address = models.TextField(default='')
+    age = models.IntegerField(db_index=True, default=0)
+    sex = models.CharField(max_length=10, default='')
 
     class Meta:
-        db_table = 'user'
+        db_table = 'profile'
         app_label = 'swe'
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
 
 
 class Request(LifeCycleModel):
