@@ -1,7 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from swe import views as v
 
 urlpatterns = [
+    path('api/rest-auth/', include("'dj_rest_auth.urls'")),
+
     path('movies/', v.MovieList.as_view()),
     path('movies/<int:id>/', v.MovieDetail.as_view()),
     path('movies/images/', v.MovieImageList.as_view()),
