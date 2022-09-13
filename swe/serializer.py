@@ -64,3 +64,19 @@ class MovieGenreAssoc(ModelSerializer):
     class Meta:
         model = m.MovieGenreAssoc
         exclude = ('id',)
+
+
+class Member(ModelSerializer):
+    title: Field = CharField()
+    director: Field = CharField
+    release_date: Field = DateTimeField()
+    total_view: Field = DateTimeField()
+    daily_view: Field = IntegerField(required=False, default=0)
+    is_valid: Field = BooleanField(read_only=True)
+    created_at: Field = DateTimeField(read_only=True)
+    deleted_at: Field = DateTimeField(read_only=True)
+
+    class Meta:
+        model = m.Movie
+        exclude = ('id',)
+
