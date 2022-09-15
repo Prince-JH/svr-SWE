@@ -61,12 +61,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'rest_framework.authtoken',  ### This enables the HTTP token authentication.
 
     'django_crontab',
 
     'drf_yasg',
+    'drf_spectacular',
 
+    'rest_framework.authtoken',
+    'dj_rest_auth',
 ]
 
 MIDDLEWARE = [

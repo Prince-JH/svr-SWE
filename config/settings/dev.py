@@ -108,14 +108,6 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# JWT_AUTH = {
-#     'JWT_SECRET_KEY': SECRET_KEY,
-#     'JWT_ALGORITHM': 'HS256',
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': timedelta(days=7),  # access-token expiration
-#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=28)  # refresh-token expiration
-# }
-
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 
 ROOT_URLCONF = 'config.urls'
