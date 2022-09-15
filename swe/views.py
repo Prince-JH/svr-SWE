@@ -70,3 +70,9 @@ class MovieGenreAssocDetail(g.RetrieveUpdateDestroyAPIView):
     queryset = apps.get_model('swe', 'MovieGenreAssoc').objects.all()
     serializer_class = s.MovieGenreAssoc
     lookup_field = 'id'
+
+
+class UserProfileList(g.ListCreateAPIView):
+    queryset = apps.get_model('swe', 'UserProfile').objects.all()
+    serializer_class = s.UserProfile
+    filter_backends = [f.IdsFilter]
