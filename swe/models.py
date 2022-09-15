@@ -116,3 +116,7 @@ class Comment(LifeCycleModel):
     class Meta:
         db_table = 'comment'
         app_label = 'swe'
+
+
+class Log(models.Model):
+    data = models.CharField(max_length=100)
