@@ -12,6 +12,7 @@ urlpatterns = [
     path('genres/<int:id>/', v.GenreDetail.as_view()),
     path('movie-genre-assocs/', v.MovieGenreAssocList.as_view()),
     path('movie-genre-assocs/<int:id>/', v.MovieGenreAssocDetail.as_view()),
+    path('user-profiles/', v.UserProfileList.as_view()),
 
     # path('swe/v1/user', UserSign.as_view({"post": "create", "put": "update", "get": "read"}), name='user-sign'),
     # path('swe/v1/user/info', UserInfo.as_view({"get": "read"}), name='user-info'),
