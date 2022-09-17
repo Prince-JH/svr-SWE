@@ -74,7 +74,8 @@ class MovieGenreAssoc(ModelSerializer):
 class UserProfile(ModelSerializer):
     user: Field = SlugRelatedField(
         slug_field='id',
-        queryset=User.objects.all()
+        queryset=User.objects.all(),
+        allow_null=True
     )
     profession: Field = CharField(max_length=100)
     address: Field = CharField(max_length=200)
@@ -89,6 +90,7 @@ class UserProfile(ModelSerializer):
         exclude = ('id',)
 
     def create(self, validated_data):
-        super().create(validated_data)
+        user_profile = super().create(validated_data)
         sg.member_created.send(sender=m.UserProfile.__class__, data=validated_data)
+        return user_profile
 

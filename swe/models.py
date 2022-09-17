@@ -68,20 +68,15 @@ class MovieGenreAssoc(LifeCycleModel):
 
 
 class UserProfile(LifeCycleModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     profession = models.CharField(max_length=50, default='')
     address = models.TextField(default='')
     age = models.IntegerField(db_index=True, default=0)
     sex = models.CharField(max_length=10, default='')
 
     class Meta:
-        db_table = 'profile'
+        db_table = 'user_profile'
         app_label = 'swe'
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
 
 
 class Request(LifeCycleModel):
